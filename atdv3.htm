@@ -1,0 +1,134 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Calculadora',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: Calculadora(),
+    );
+  }
+}
+
+class Calculadora extends StatefulWidget {
+  @override
+  _CalculadoraState createState() => _CalculadoraState();
+}
+
+class _CalculadoraState extends State<Calculadora> {
+  String _output = "0";
+  String _input = "";
+  double _num1 = 0;
+  double _num2 = 0;
+  String _operador = "";
+
+  void _atualizarResultado(String buttonText) {
+    setState(() {
+      if (buttonText == "C") {
+        _output = "0";
+        _input = "";
+        _num1 = 0;
+        _num2 = 0;
+        _operador = "";
+      } else if (buttonText == "+" || buttonText == "-" || buttonText == "×" || buttonText == "÷") {
+        _num1 = double.tryParse(_output) ?? 0;
+        _operador = buttonText;
+        _output = "0";
+      } else if (buttonText == "=") {
+        _num2 = double.tryParse(_output) ?? 0;
+        if (_operador == "+") {
+          _output = (_num1 + _num2).toString();
+        } else if (_operador == "-") {
+          _output = (_num1 - _num2).toString();
+        } else if (_operador == "×") {
+          _output = (_num1 * _num2).toString();
+        } else if (_operador == "÷") {
+          _output = (_num2 != 0) ? (_num1 / _num2).toString() : "Erro";
+        }
+        _input = "";
+        _operador = "";
+      } else {
+        if (_output == "0") {
+          _output = buttonText;
+        } else {
+          _output += buttonText;
+        }
+      }
+    });
+  }
+
+  Widget _botaoCalculadora(String text) {
+    return Expanded(
+      child: ElevatedButton(
+        onPressed: () => _atualizarResultado(text),
+        child: Text(text, style: TextStyle(fontSize: 24)),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Calculadora Web'),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(20),
+              alignment: Alignment.centerRight,
+              child: Text(
+                _output,
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          Column(
+            children: [
+              Row(
+                children: [
+                  _botaoCalculadora("7"),
+                  _botaoCalculadora("8"),
+                  _botaoCalculadora("9"),
+                  _botaoCalculadora("÷"),
+                ],
+              ),
+              Row(
+                children: [
+                  _botaoCalculadora("4"),
+                  _botaoCalculadora("5"),
+                  _botaoCalculadora("6"),
+                  _botaoCalculadora("×"),
+                ],
+              ),
+              Row(
+                children: [
+                  _botaoCalculadora("1"),
+                  _botaoCalculadora("2"),
+                  _botaoCalculadora("3"),
+                  _botaoCalculadora("-"),
+                ],
+              ),
+              Row(
+                children: [
+                  _botaoCalculadora("C"),
+                  _botaoCalculadora("0"),
+                  _botaoCalculadora("="),
+                  _botaoCalculadora("+"),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
